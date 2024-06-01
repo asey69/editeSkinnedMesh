@@ -1,5 +1,8 @@
-# author Oleksii Zinchenko 2024
-
+'''
+Copyright 2024 Oleksii Zinchenko. All rights reserved.
+editeSkinnedMesh 1.0.0
+Tool for separate or combine skinned mesh with preserving skin weights.
+'''
 import maya.cmds as cmds
 import maya.mel as mel
 
