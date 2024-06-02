@@ -7,7 +7,7 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 
-def CombineSkinnedMeshProc(*args):
+def combineSkinnedMesh(*args):
     name = cmds.textField('name_fld', q=True, tx=True)
     if name:
         sel = cmds.ls(sl=True)
@@ -21,7 +21,13 @@ def CombineSkinnedMeshProc(*args):
                 t = cmds.ls('mesh_for_duplicate_*', r=True, s=False)
                 cmds.polyUnite(t, n=name, op=True, muv=1)
                 cmds.delete(name, ch=True)
-                cmds.parent(name, 'generated_geo')
+                
+                t = cmds.listRelatives(name, p=True)
+                if t:
+                    if not t[0] == 'generated_geo':
+                        cmds.parent(name, 'generated_geo')
+                else:
+                    cmds.parent(name, 'generated_geo')
                 # copy skin
                 cmds.select(cl=True)
                 inf = []
@@ -57,7 +63,7 @@ def CombineSkinnedMeshProc(*args):
         cmds.warning('No name!')
 
 
-def SeparateSkinnedMeshProc():
+def separateSkinnedMesh():
     sel = cmds.ls(sl=True)
     if sel:
         name = cmds.textField('name_fld', q=True, tx=True)
@@ -72,11 +78,19 @@ def SeparateSkinnedMeshProc():
                 cmds.select(cl=True)
                 for a in sel:
                     cmds.select('%s.%s' % (name, a[len(obj) + 1:]), add=True)
-                mel.eval('invertSelection')
+                
+                cmds.hilite(name, r=True)
+                mel.eval('invertSelection;')
                 t = cmds.ls(sl=True)
                 cmds.delete(t)
                 cmds.delete(name, ch=True)
-                cmds.parent(name, 'generated_geo')
+                
+                t = cmds.listRelatives(name, p=True)
+                if t:
+                    if not t[0] == 'generated_geo':
+                        cmds.parent(name, 'generated_geo')
+                else:
+                    cmds.parent(name, 'generated_geo')
                 # copy skin
                 cmds.skinPercent(skin, obj, prw=0.01)
                 inf = cmds.skinCluster(skin, q=True, inf=True)
@@ -97,7 +111,7 @@ def SeparateSkinnedMeshProc():
         cmds.warning('Nothing selected!')
 
 
-def separateMesh_UI():
+def editeSkinnedMesh_UI():
     if cmds.window('CombSepSkinMeshWin', ex=True):
         cmds.deleteUI('CombSepSkinMeshWin')
     cmds.window("CombSepSkinMeshWin", t="Combine Separate Skinned Mesh", s=0)
@@ -105,8 +119,8 @@ def separateMesh_UI():
     cmds.text(l='', h=1, p='case')
 
     cmds.rowColumnLayout('opt_rc', nc=2, cal=[(1, 'right'), (2, 'center')], rs=[(1, 15), (2, 5)], cs=[(1, 5), (2, 5)],
-                         cw=[(1, 220), (2, 20)], p='case')
-    cmds.text(l='delete separated faces from origin mesh:', p='opt_rc')
+                         cw=[(1, 265), (2, 20)], p='case')
+    cmds.text(l='delete from origin:', p='opt_rc')
     cmds.checkBox('del_cbox', l='', v=False, p='opt_rc')
 
     cmds.rowColumnLayout('name_rc', nc=2, cal=[(1, 'right'), (2, 'center')], rs=[(1, 5), (2, 5)], cs=[(1, 5), (2, 5)],
@@ -114,7 +128,8 @@ def separateMesh_UI():
     cmds.text(l='name:', p='name_rc')
     cmds.textField('name_fld', tx='', p='name_rc')
 
-    cmds.button(l='Combine Skinned Mesh', c=lambda x: CombineSkinnedMeshProc(), p='case')
-    cmds.button(l='Separate Skinned Mesh', c=lambda x: SeparateSkinnedMeshProc(), p='case')
+    cmds.button(l='Combine Skinned Mesh', c=lambda x: combineSkinnedMesh(), p='case')
+    cmds.button(l='Separate Skinned Mesh', c=lambda x: separateSkinnedMesh(), p='case')
     cmds.showWindow("CombSepSkinMeshWin")
     cmds.window("CombSepSkinMeshWin", e=True, wh=(300, 110))
+    
