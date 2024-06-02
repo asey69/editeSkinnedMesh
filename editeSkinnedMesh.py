@@ -120,7 +120,7 @@ def editeSkinnedMesh_UI():
 
     cmds.rowColumnLayout('opt_rc', nc=2, cal=[(1, 'right'), (2, 'center')], rs=[(1, 15), (2, 5)], cs=[(1, 5), (2, 5)],
                          cw=[(1, 265), (2, 20)], p='case')
-    cmds.text(l='delete from origin:', p='opt_rc')
+    cmds.text(l='remove from original:', p='opt_rc')
     cmds.checkBox('del_cbox', l='', v=False, p='opt_rc')
 
     cmds.rowColumnLayout('name_rc', nc=2, cal=[(1, 'right'), (2, 'center')], rs=[(1, 5), (2, 5)], cs=[(1, 5), (2, 5)],
@@ -133,3 +133,4 @@ def editeSkinnedMesh_UI():
     cmds.showWindow("CombSepSkinMeshWin")
     cmds.window("CombSepSkinMeshWin", e=True, wh=(300, 110))
     
+editeSkinnedMesh_UI()
