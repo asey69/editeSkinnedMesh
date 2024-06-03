@@ -1,4 +1,4 @@
-# separateSkinnedMesh
+# editeSkinnedMesh
 Separated and cobined skinned mesh with preserve or skin.
 
 How it works
